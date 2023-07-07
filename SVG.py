@@ -1,5 +1,4 @@
-from Color import RGB
-from Pos import Pos
+from .Color import RGB
 class SVG:
     encoding:str = 'Shift-JIS'
     unit:str = 'mm'
@@ -16,14 +15,14 @@ class SVG:
     def __del__(self):
         self.fp.close()
 
-    def start(self, canvas=[Pos(0, 0), Pos(100, 100)], viewBox=[Pos(0, 0), Pos(100, 100)]):
+    def start(self, viewBox_min_x=0, viewBox_min_y=0, viewBox_width=600, viewBox_height=400, width=600, height=400):
         self.fp.write(f"<?xml version=\"{1.0}\" encoding=\"{self.encoding}\"?>\n")
         self.fp.write("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n"
                       "  \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n")
         self.fp.write(f"<svg version=\"1.1\" "
-                      f"width=\"{canvas[1].x - canvas[0].x}{self.unit}\" "
-                      f"height=\"{canvas[1].y - canvas[0].y}{self.unit}\" "
-                      f"viewBox=\"{viewBox[0].x} {viewBox[0].y} {viewBox[1].x} {viewBox[1].y}\" "
+                      f"width=\"{width}{self.unit}\" "
+                      f"height=\"{height}{self.unit}\" "
+                      f"viewBox=\"{viewBox_min_x} {viewBox_min_y} {viewBox_width} {viewBox_height}\" "
                       f"preserveAspectRatio=\"xMidYMid\" "
                       f"fill-rule=\"evenodd\" "
                       f"xmlns=\"http://www.w3.org/2000/svg\" "
@@ -43,13 +42,15 @@ class SVG:
     def set_draw_color(self, color:RGB):
         self.draw_color = color
 
-    def line(self, left_top:Pos, right_bottom:Pos, color:RGB=draw_color, width=draw_width):
-        self.fp.write(f"<line x1=\"{left_top.x}\" y1=\"{left_top.y}\" "
-                      f"x2=\"{right_bottom.x}\" y2=\"{right_bottom.y}\" "
+    def line(self, x1:float, y1:float, x2:float, y2:float, color:RGB=draw_color, width=draw_width):
+        self.fp.write(f"<line x1=\"{x1}\" y1=\"{y1}\" "
+                      f"x2=\"{x2}\" y2=\"{y2}\" "
                       f"stroke=\"{color}\" stroke-width=\"{width}\" "
                       f"stroke-opacity=\"{1}\" stroke-linecap=\"{'round'}\" />\n")
-    def rect():
-        pass
+    def rect(self, x:float=0, y:float=0, fill_color=fill_color, width='auto', height='auto'):
+        self.fp.write(f"<rect x=\"{x}\" y=\"{y}\" "
+                      f"width=\"{width}\" height=\"{height}\" "
+                      f"fill=\"{fill_color}\" />\n")
     def circle():
         pass
     def text():
