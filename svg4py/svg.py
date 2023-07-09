@@ -1,7 +1,10 @@
-from .Color import RGB
+from .color import RGB
+
 class SVG:
     units = {'mm', 'px'}
     linecaps = {'butt', 'square', 'round'}
+
+
     def __init__(self, file_name, viewBox_min_x=0, viewBox_min_y=0, viewBox_width=600, viewBox_height=400, width=None, height=None, unit:str='mm'):
         if width is None:
             width = viewBox_width
@@ -19,9 +22,11 @@ class SVG:
         self.fill_color:RGB = RGB(255, 255, 255) # 'white'
         self.font_family = 'monospace'
         self._start(viewBox_min_x, viewBox_min_y, viewBox_width, viewBox_height, width, height)
+
     def __del__(self):
         self._finish()
         self.fp.close()
+
 
     def _start(self, viewBox_min_x=0, viewBox_min_y=0, viewBox_width=600, viewBox_height=400, width=600, height=400):
         self.fp.write(f"<?xml version=\"{1.0}\" encoding=\"{self.encoding}\"?>\n")
@@ -35,18 +40,23 @@ class SVG:
                       f"fill-rule=\"evenodd\" "
                       f"xmlns=\"http://www.w3.org/2000/svg\" "
                       f"xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n")
+
     def _finish(self):
         self.fp.write('</svg>\n')
+
     def _set_unit(self, unit:str):
         if unit in self.units:
             self.unit = unit
         else:
             raise ValueError('the unit unavailable!')
 
+
     def set_width(self, stroke_width):
         self.stroke_width = stroke_width
+
     def set_fill_color(self, color:RGB):
         self.fill_color = color
+
     def set_stroke_color(self, color:RGB):
         self.stroke_color = color
 
@@ -59,6 +69,7 @@ class SVG:
                       f"x2=\"{x2}\" y2=\"{y2}\" "
                       f"stroke=\"{color}\" stroke-width=\"{width}\" "
                       f"stroke-opacity=\"{1}\" stroke-linecap=\"{'round'}\" />\n")
+
     def rect(self, x:float=0, y:float=0, width='auto', height='auto', fill_color=None, stroke_color=None):
         if fill_color is None:
             fill_color = self.fill_color
@@ -67,6 +78,7 @@ class SVG:
         self.fp.write(f"<rect x=\"{x}\" y=\"{y}\" "
                       f"width=\"{width}\" height=\"{height}\" "
                       f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" />\n")
+
     def circle(self, cx=0, cy=0, r=0, fill_color=None, stroke_color=None, stroke_width=None):
         if fill_color is None:
             fill_color = self.fill_color
@@ -77,6 +89,7 @@ class SVG:
         self.fp.write(f"<circle cx=\"{cx}\" cy=\"{cy}\" r=\"{r}\" "
                       f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" stroke-width=\"{stroke_width}\" "
                       f"fill-opacity=\"{1.0}\" stroke-opacity=\"{1.0}\" />\n")
+
     def text(self, x:float=0, y:float=0, text:str='', font_family=None, font_size=None):
         if font_family is None:
             font_family = self.font_family

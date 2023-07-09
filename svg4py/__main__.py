@@ -1,5 +1,5 @@
-from SVG import SVG
-from Color import RGB
+from .svg import SVG
+from .color import RGB
 
 file_name = 'test.svg'
 
