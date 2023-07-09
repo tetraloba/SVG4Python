@@ -1,21 +1,29 @@
-from .Color import RGB
+from Color import RGB
 class SVG:
-    encoding:str = 'Shift-JIS'
-    unit:str = 'mm'
-    draw_width = 1
-    draw_color:RGB = RGB(255, 255, 255) # 'white'
-    fill_color:RGB = RGB(255, 255, 255) # 'white'
-    # canvas = [Pos(0, 0), Pos(100, 100)]
-    # viewBox = [Pos(0, 0), Pos(100, 100)]
-    def __init__(self, file_name):
+    units = {'mm', 'px'}
+    linecaps = {'butt', 'square', 'round'}
+    def __init__(self, file_name, viewBox_min_x=0, viewBox_min_y=0, viewBox_width=600, viewBox_height=400, width=None, height=None, unit:str='mm'):
+        if width is None:
+            width = viewBox_width
+        if height is None:
+            height = viewBox_height
         try:
             self.fp = open(file_name, mode='w')
         except FileNotFoundError: # 権限などのエラーは含まれない？
             print('ファイル', file_name, 'を開けませんでした。')
+        self.encoding:str = 'Shift-JIS'
+        self.unit:str
+        self._set_unit(unit)
+        self.stroke_width = 10
+        self.stroke_color:RGB = RGB(255, 255, 255) # 'white'
+        self.fill_color:RGB = RGB(255, 255, 255) # 'white'
+        self.font_family = 'monospace'
+        self._start(viewBox_min_x, viewBox_min_y, viewBox_width, viewBox_height, width, height)
     def __del__(self):
+        self._finish()
         self.fp.close()
 
-    def start(self, viewBox_min_x=0, viewBox_min_y=0, viewBox_width=600, viewBox_height=400, width=600, height=400):
+    def _start(self, viewBox_min_x=0, viewBox_min_y=0, viewBox_width=600, viewBox_height=400, width=600, height=400):
         self.fp.write(f"<?xml version=\"{1.0}\" encoding=\"{self.encoding}\"?>\n")
         self.fp.write("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n"
                       "  \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n")
@@ -27,31 +35,53 @@ class SVG:
                       f"fill-rule=\"evenodd\" "
                       f"xmlns=\"http://www.w3.org/2000/svg\" "
                       f"xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n")
-    def finish(self):
+    def _finish(self):
         self.fp.write('</svg>\n')
-
-    def set_unit(self, unit:str):
-        if unit == 'mm' or unit == 'px':
+    def _set_unit(self, unit:str):
+        if unit in self.units:
             self.unit = unit
         else:
             raise ValueError('the unit unavailable!')
-    def set_width(self, draw_width):
-        self.draw_width = draw_width
+
+    def set_width(self, stroke_width):
+        self.stroke_width = stroke_width
     def set_fill_color(self, color:RGB):
         self.fill_color = color
-    def set_draw_color(self, color:RGB):
-        self.draw_color = color
+    def set_stroke_color(self, color:RGB):
+        self.stroke_color = color
 
-    def line(self, x1:float, y1:float, x2:float, y2:float, color:RGB=draw_color, width=draw_width):
+    def line(self, x1:float, y1:float, x2:float, y2:float, color:RGB=None, width=None):
+        if color is None:
+            color = self.stroke_color
+        if width is None:
+            width = self.stroke_width
         self.fp.write(f"<line x1=\"{x1}\" y1=\"{y1}\" "
                       f"x2=\"{x2}\" y2=\"{y2}\" "
                       f"stroke=\"{color}\" stroke-width=\"{width}\" "
                       f"stroke-opacity=\"{1}\" stroke-linecap=\"{'round'}\" />\n")
-    def rect(self, x:float=0, y:float=0, fill_color=fill_color, width='auto', height='auto'):
+    def rect(self, x:float=0, y:float=0, width='auto', height='auto', fill_color=None, stroke_color=None):
+        if fill_color is None:
+            fill_color = self.fill_color
+        if stroke_color is None:
+            stroke_color = self.stroke_color
         self.fp.write(f"<rect x=\"{x}\" y=\"{y}\" "
                       f"width=\"{width}\" height=\"{height}\" "
-                      f"fill=\"{fill_color}\" />\n")
-    def circle():
-        pass
-    def text():
-        pass
+                      f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" />\n")
+    def circle(self, cx=0, cy=0, r=0, fill_color=None, stroke_color=None, stroke_width=None):
+        if fill_color is None:
+            fill_color = self.fill_color
+        if stroke_color is None:
+            stroke_color = self.stroke_color
+        if stroke_width is None:
+            stroke_width = self.stroke_width
+        self.fp.write(f"<circle cx=\"{cx}\" cy=\"{cy}\" r=\"{r}\" "
+                      f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" stroke-width=\"{stroke_width}\" "
+                      f"fill-opacity=\"{1.0}\" stroke-opacity=\"{1.0}\" />\n")
+    def text(self, x:float=0, y:float=0, text:str='', font_family=None, font_size=None):
+        if font_family is None:
+            font_family = self.font_family
+        if font_size is None:
+            font_size = self.font_size
+        self.fp.write(f"<text x=\"{x}\" y=\"{y}\" "
+                      f"font-family=\"{font_family}\" font-size=\"{font_size}\" "
+                      f"fill=\"{self.fill_color}\" stroke=\"{self.stroke_color}\" >" + text + "</text>\n")
