@@ -1,4 +1,4 @@
-from Color import RGB
+from .Color import RGB
 class SVG:
     units = {'mm', 'px'}
     linecaps = {'butt', 'square', 'round'}
