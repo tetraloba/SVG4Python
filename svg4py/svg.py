@@ -5,7 +5,7 @@ class SVG:
     linecaps = {'butt', 'square', 'round'}
 
 
-    def __init__(self, file_name, viewBox_min_x=0, viewBox_min_y=0, viewBox_width=600, viewBox_height=400, width=None, height=None, unit:str='mm'):
+    def __init__(self, file_name, viewBox_min_x = 0, viewBox_min_y = 0, viewBox_width = 600, viewBox_height = 400, width=None, height=None, unit:str='mm'):
         if width is None:
             width = viewBox_width
         if height is None:
@@ -17,7 +17,7 @@ class SVG:
         self.encoding:str = 'Shift-JIS'
         self.unit:str
         self._set_unit(unit)
-        self.stroke_width = 10
+        self.stroke_width = 3
         self.stroke_color:RGB = RGB(255, 255, 255) # 'white'
         self.fill_color:RGB = RGB(255, 255, 255) # 'white'
         self.font_family = 'monospace'
@@ -28,7 +28,7 @@ class SVG:
         self.fp.close()
 
 
-    def _start(self, viewBox_min_x=0, viewBox_min_y=0, viewBox_width=600, viewBox_height=400, width=600, height=400):
+    def _start(self, viewBox_min_x = 0, viewBox_min_y = 0, viewBox_width = 600, viewBox_height = 400, width = 600, height = 400):
         self.fp.write(f"<?xml version=\"{1.0}\" encoding=\"{self.encoding}\"?>\n")
         self.fp.write("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n"
                       "  \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n")
@@ -44,7 +44,7 @@ class SVG:
     def _finish(self):
         self.fp.write('</svg>\n')
 
-    def _set_unit(self, unit:str):
+    def _set_unit(self, unit: str):
         if unit in self.units:
             self.unit = unit
         else:
@@ -54,13 +54,13 @@ class SVG:
     def set_width(self, stroke_width):
         self.stroke_width = stroke_width
 
-    def set_fill_color(self, color:RGB):
+    def set_fill_color(self, color: RGB):
         self.fill_color = color
 
-    def set_stroke_color(self, color:RGB):
+    def set_stroke_color(self, color: RGB):
         self.stroke_color = color
 
-    def line(self, x1:float, y1:float, x2:float, y2:float, color:RGB=None, width=None):
+    def line(self, x1: float, y1: float, x2: float, y2: float, color: RGB = None, width = None):
         if color is None:
             color = self.stroke_color
         if width is None:
@@ -70,7 +70,7 @@ class SVG:
                       f"stroke=\"{color}\" stroke-width=\"{width}\" "
                       f"stroke-opacity=\"{1}\" stroke-linecap=\"{'round'}\" />\n")
 
-    def rect(self, x:float=0, y:float=0, width='auto', height='auto', fill_color=None, stroke_color=None):
+    def rect(self, x: float = 0, y: float = 0, width = 'auto', height = 'auto', fill_color = None, stroke_color = None):
         if fill_color is None:
             fill_color = self.fill_color
         if stroke_color is None:
@@ -79,7 +79,7 @@ class SVG:
                       f"width=\"{width}\" height=\"{height}\" "
                       f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" />\n")
 
-    def circle(self, cx=0, cy=0, r=0, fill_color=None, stroke_color=None, stroke_width=None):
+    def circle(self, cx: float = 0, cy: float = 0, r: float = 0, fill_color: RGB = None, stroke_color: RGB = None, stroke_width: float = None):
         if fill_color is None:
             fill_color = self.fill_color
         if stroke_color is None:
@@ -90,11 +90,18 @@ class SVG:
                       f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" stroke-width=\"{stroke_width}\" "
                       f"fill-opacity=\"{1.0}\" stroke-opacity=\"{1.0}\" />\n")
 
-    def text(self, x:float=0, y:float=0, text:str='', font_family=None, font_size=None):
+    def text(self, x: float = 0, y: float = 0, text: str = '', font_family: str = None, font_size: float = None, fill_color: RGB = None, stroke_color: RGB = None, stroke_width: float = None,):
         if font_family is None:
             font_family = self.font_family
         if font_size is None:
             font_size = self.font_size
+        if fill_color is None:
+            fill_color = self.fill_color
+        if stroke_color is None:
+            stroke_color = self.stroke_color
+        if stroke_width is None:
+            stroke_width = self.stroke_width
         self.fp.write(f"<text x=\"{x}\" y=\"{y}\" "
                       f"font-family=\"{font_family}\" font-size=\"{font_size}\" "
-                      f"fill=\"{self.fill_color}\" stroke=\"{self.stroke_color}\" >" + text + "</text>\n")
+                      f"fill=\"{self.fill_color}\" stroke=\"{self.stroke_color}\" "
+                      f"stroke-width=\"{stroke_width}\" >" + text + "</text>\n")
