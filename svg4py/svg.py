@@ -68,7 +68,7 @@ class SVG:
         self.fp.write(f"<line x1=\"{x1}\" y1=\"{y1}\" "
                       f"x2=\"{x2}\" y2=\"{y2}\" "
                       f"stroke=\"{color}\" stroke-width=\"{width}\" "
-                      f"stroke-opacity=\"{1}\" stroke-linecap=\"{'round'}\" />\n")
+                      f"stroke-opacity=\"{1}\" stroke-linecap=\"{'batt'}\" />\n")
 
     def rect(self, x: float = 0, y: float = 0, width = 'auto', height = 'auto', fill_color = None, stroke_color = None):
         if fill_color is None:
@@ -103,5 +103,5 @@ class SVG:
             stroke_width = self.stroke_width
         self.fp.write(f"<text x=\"{x}\" y=\"{y}\" "
                       f"font-family=\"{font_family}\" font-size=\"{font_size}\" "
-                      f"fill=\"{self.fill_color}\" stroke=\"{self.stroke_color}\" "
+                      f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" "
                       f"stroke-width=\"{stroke_width}\" >" + text + "</text>\n")
