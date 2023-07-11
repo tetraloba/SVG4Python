@@ -77,7 +77,8 @@ class SVG:
             stroke_color = self.stroke_color
         self.fp.write(f"<rect x=\"{x}\" y=\"{y}\" "
                       f"width=\"{width}\" height=\"{height}\" "
-                      f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" " f"stroke-width=\"{stroke_width}\" />\n")
+                      f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" "
+                      f"stroke-width=\"{stroke_width}\" />\n")
 
     def circle(self, cx: float = 0, cy: float = 0, r: float = 0, fill_color: RGB = None, stroke_color: RGB = None, stroke_width: float = None):
         if fill_color is None:
