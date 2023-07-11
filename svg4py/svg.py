@@ -70,14 +70,14 @@ class SVG:
                       f"stroke=\"{color}\" stroke-width=\"{width}\" "
                       f"stroke-opacity=\"{1}\" stroke-linecap=\"{'batt'}\" />\n")
 
-    def rect(self, x: float = 0, y: float = 0, width = 'auto', height = 'auto', fill_color = None, stroke_color = None):
+    def rect(self, x: float = 0, y: float = 0, width = 'auto', height = 'auto', fill_color = None, stroke_color = None, stroke_width: float = None):
         if fill_color is None:
             fill_color = self.fill_color
         if stroke_color is None:
             stroke_color = self.stroke_color
         self.fp.write(f"<rect x=\"{x}\" y=\"{y}\" "
                       f"width=\"{width}\" height=\"{height}\" "
-                      f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" />\n")
+                      f"fill=\"{fill_color}\" stroke=\"{stroke_color}\" " f"stroke-width=\"{stroke_width}\" />\n")
 
     def circle(self, cx: float = 0, cy: float = 0, r: float = 0, fill_color: RGB = None, stroke_color: RGB = None, stroke_width: float = None):
         if fill_color is None:
